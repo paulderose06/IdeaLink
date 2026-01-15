@@ -365,13 +365,13 @@
     const message = document.getElementById("no-projects");
 
     try {
-      const res = await fetch("https://idealink-1.onrender.com");
+      const res = await fetch("https://idealink-1.onrender.com/projets");
       const projets = await res.json();
       tousLesProjets = projets;
 
       afficherProjets(projets);
     } catch (err) {
-      message.textContent = "❌ Erreur de connexion au serveur.";
+      message.textContent = "Erreur de connexion au serveur.";
       console.error(err);
     }
   }
@@ -429,3 +429,4 @@
 
 </body>
 </html>
+
