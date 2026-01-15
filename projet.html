@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajouter un projet - IdeaLink</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f9f9f9;
+            padding: 60px 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #00b4db;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            background-color: #00b4db;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            background-color: #009bbf;
+        }
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            background-color: #e0e0e0;
+            color: #333;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+.back-button:hover {
+    background-color: #d2d2d2;
+}
+
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">← Retour</a>
+    <div class="container">
+        <h1>Ajouter un projet</h1>
+        <form action="#" method="post">
+            <label for="titre">Titre du projet</label>
+            <input type="text" id="titre" name="titre" required>
+
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="6" required></textarea>
+
+            <label for="categorie">Catégorie</label>
+            <select id="categorie" name="categorie" required>
+                <option value="">-- Choisir une catégorie --</option>
+                <option value="technologie">Technologie</option>
+                <option value="écologie">Environnement</option>
+                <option value="social">Santé</option>
+                <option value="éducation">Éducation</option>
+                <option value="social">Social</option>
+                <option value="social">Finance</option>
+                <option value="social">Art et Culture</option>
+                <option value="social">Alimentation</option>
+                <option value="social">Sport</option>
+                <option value="autre">Autre</option>
+            </select>
+
+            <label for="budget">Budget estimé (€)</label>
+            <input type="number" id="budget" name="budget" min="0">
+
+            <label for="lien">Lien externe (facultatif)</label>
+            <input type="url" id="lien" name="lien">
+
+            <button type="submit">Soumettre le projet</button>
+        </form>
+    </div>
+    <script>
+  const form = document.querySelector("form");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const data = {
+      titre: document.getElementById("titre").value,
+      description: document.getElementById("description").value,
+      categorie: document.getElementById("categorie").value,
+      budget: document.getElementById("budget").value,
+      lien: document.getElementById("lien").value,
+    };
+
+    try {
+      const res = await fetch("http://localhost:3000/projets", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (res.ok) {
+        alert("✅ Projet soumis avec succès !");
+        form.reset();
+      } else {
+        alert("❌ Erreur lors de l'envoi du projet.");
+      }
+    } catch (err) {
+      alert("🚫 Erreur de connexion au serveur.");
+      console.error(err);
+    }
+  });
+</script>
+
+</body>
+</html>
