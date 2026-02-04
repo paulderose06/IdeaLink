@@ -1,38 +1,49 @@
-const express = require('express');
-const fs = require('fs');
-const cors = require('cors');
+const express = require("express");
+const cors = require("cors");
+const { createClient } = require("@supabase/supabase-js");
+
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-app.use(cors()); // autorise les requêtes du front
-app.use(express.json()); // parse le body JSON
+app.use(cors());
+app.use(express.json());
 
-const DATA_FILE = 'projets.json';
+// 🔑 Connexion Supabase
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
 
-// POST : enregistrer un projet
-app.post('/projets', (req, res) => {
+// ✅ GET /projets
+app.get("/projets", async (req, res) => {
+  const { data, error } = await supabase
+    .from("projets")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  res.json(data);
+});
+
+// ✅ POST /projets
+app.post("/projets", async (req, res) => {
   const nouveauProjet = req.body;
-  let projets = [];
 
-  if (fs.existsSync(DATA_FILE)) {
-    projets = JSON.parse(fs.readFileSync(DATA_FILE));
+  const { error } = await supabase
+    .from("projets")
+    .insert([nouveauProjet]);
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
   }
 
-  projets.push(nouveauProjet);
-  fs.writeFileSync(DATA_FILE, JSON.stringify(projets, null, 2));
-  res.status(201).json({ message: 'Projet enregistré ✅' });
+  res.status(201).json({ message: "Projet ajouté avec succès" });
 });
 
-// GET : récupérer les projets
-app.get('/projets', (req, res) => {
-  if (!fs.existsSync(DATA_FILE)) {
-    return res.json([]);
-  }
-  const projets = JSON.parse(fs.readFileSync(DATA_FILE));
-  res.json(projets);
-});
-
-// Lancer le serveur
+// 🚀 Lancer le serveur
 app.listen(PORT, () => {
   console.log(`✅ Serveur lancé sur http://localhost:${PORT}`);
 });
